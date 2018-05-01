@@ -16,7 +16,6 @@ function sitemap_accordion(a) {
 		};
 
 		var cont = d.getElementById(b.containerId),
-		head = d.getElementsByTagName('head')[0],
 		category = [];
 
 		w['gabungin'] = function(out) {
@@ -53,12 +52,9 @@ function sitemap_accordion(a) {
 			}) : entry;
 			if (b.sortAlphabetically.thePanel) category.sort();
 			for (var g = 0, gen = category.length; g < gen; ++g) {
-				if(g == 0) {
-					skeleton += '<div class="stmpit"><input type="'+ (b.onePanel ? 'radio' : 'checkbox') +'" id="acc-' + g + '" name="radioit" checked/>';
-				} else {
-					skeleton += '<div class="stmpit"><input type="'+ (b.onePanel ? 'radio' : 'checkbox') +'" id="acc-' + g + '" name="radioit" />';
-				}
-				skeleton += '<label '+ (g == 0 ? 'class="lbl-top"' : '') + ((gen - 1) == g ? 'class="lbl-bttm"' : '') +' for="acc-' + g + '">' + category[g] + '</label>';
+
+				skeleton += '<div class="stmpit"><input type="'+ (b.onePanel ? 'radio' : 'checkbox') +'" id="acc-' + g + '" name="radioit" />';
+				skeleton += '<label '+ (g == 0 ? 'class="lbl-top"' : '') + ((gen - 1) == g ? 'class="lbl-bttm"' : '') +' for="acc-' + g + '" onclick="sFuncT(this, '+ (b.onePanel ? 'true' : 'false') +')">' + category[g] + '</label>';
 				skeleton += '<div class="konten"><ul>';
 				for (var i = 0, ien = entry.length; i < ien; ++i) {
 					title = entry[i].title.$t;
@@ -82,17 +78,27 @@ function sitemap_accordion(a) {
 
 		var s = d.createElement('script');
 		s.src = b.url.replace(/\/$/, "") + '/feeds/posts/summary?alt=json-in-script&max-results=' + b.maxResults + '&callback=' + b.jsonCallback;
-
-		if (b.delayLoading == "onload") {
-			w.onload = function() {
-				head.appendChild(s);
-			};
-		} else {
-			w.setTimeout(function() {
-				head.appendChild(s);
-			}, b.delayLoading);
-		}
+		cont.appendChild(s);
 
 	}(window, document));
 
 };
+
+function sFuncT(el, panel) {
+	var parent = el.parentNode,
+	asline = parent.parentNode,
+	konten = parent.querySelector('.konten > ul');
+	var kabeh = asline.querySelectorAll('.stmpit > .konten');
+	if(panel) {
+		for (var it = 0; it < kabeh.length; it++) {
+			kabeh[it].style.height = '0';
+		}
+	}
+	if(parent.querySelector('.konten').offsetHeight && !panel) {
+		parent.querySelector('.konten').
+		style.height = '0';
+	} else {
+		parent.querySelector('.konten').
+		style.height = (konten.offsetHeight + 10)+"px";
+	}
+}
